@@ -1,5 +1,6 @@
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_community.llms import Ollama
+import pandas as pd
 
 # 텍스트 정제를 위한 Ollama 모델 초기화
 #llm_reasoning = Ollama(model="gemma2:27b")
@@ -7,43 +8,56 @@ llm = Ollama(model="gemma2:27b")
 
 
 # ASCII 코드 대체 여부에 대한 분류 프롬프트 설정
-prompt = ChatPromptTemplate.from_template(
-    """
-    다음 텍스트에서 불필요한 노이즈(ASCII 코드, 특수 문자, 이상한 공백, 숫자 사이에 끼어 있는 불필요한 문자)를 제거하고
-    가능한 한 읽기 쉬운 형태로 정제해 주세요. 노이즈 제거 후, 최종 정제된 텍스트만 반환해 주세요.
-    텍스트 수: {batch_size}
-    텍스트 목록:
-    {input_text}
+prompt_reasoning = """
+    당신은 한국어 텍스트의 노이즈를 제거하고 원래 문장으로 복원하는 한국어 언어학 전문가입니다.
+    잘못된 문자, 의미 없는 기호, 불필요한 단어 등을 걸러내고 의미를 재구성하여 원래 문장의 내용을 복원할 수 있습니다.
+    이 작업은 주어진 한국어 텍스트에서 불필요한 기호, 무작위 문자, 불완전한 단어 등을 제거하여 자연스럽고 완전한 문장으로 복원하는 것을 목표로 합니다.
+    
+    다음 단계에 따라 작업을 수행하세요:
+    1단계: 주어진 텍스트에서 노이즈 패턴을 식별합니다. 의미 없는 문자나 기호, 오류 문자 등을 찾아 메모합니다.
+    2단계: 의미와 문맥이 유지되도록 노이즈를 제거합니다. 특히 한국어 단어와 문법에 맞지 않는 기호, 영어 문자, 숫자 등을 삭제하거나 수정합니다.
+    3단계: 문장 구조를 파악하고, 복원된 문장의 자연스러운 흐름을 위해 단어를 재배치합니다. 의미가 명확하게 전달되도록 문장 내 단어 순서를 조정합니다.
+    4단계: 필요할 경우 문법에 맞는 조사나 접속사를 추가하여 의미 전달이 자연스럽도록 합니다.
+    5단계: 원래 문장으로 합리적으로 유추할 수 있는 부분을 복원합니다 (예: 아이폰 XS 대신 '아이1XS'로 기록된 경우 '아이폰 XS'으로 복원).
+
+    예시:
+    입력: "정i :파1 미사z KT( 이용기간 2e 단] Q분종U2보"
+    출력: "정파 미사 KT 이용기간 2개월 단축 보도"
+"""
+
+prompt_template = ChatPromptTemplate.from_template(
+    f"""
+    {prompt_reasoning}
+    
+    주어진 텍스트 목록:
+    {{input_text}}
+
+    복원된 문장은 올바른 한국어 문법과 자연스러운 표현을 사용하여 완전한 문장 형태로 작성하세요. 노이즈를 제거하면서 원래 의미를 최대한 유지하도록 하세요.
+    모든 단계를 완료한 후, 추가할 요소가 있는지 검토하고 필요한 경우 다시 수정하세요.
+    Take a deep breath and work on this problem step-by-step.
     """
 )
 
-# 예제 텍스트 데이터
-data_samples = [
-    "정i :파1 미사z KT( 이용기간 2e 단] Q분종U2보",
-    "K찰.국DLwo 로L3한N% 회장 2 T0&}송=",
-    "m 김정) 자주통일 새,?r열1나가야1보",
-    "갤노트8 주말 27만대 개통…시장은 불법 보조금 얼룩",
-    "pI美대선I앞두고 R2fr단 발] $비해 감시 강화",
-    "oi 매력 R모h츠a열#w3약 >l·주가 고Q/진",
-    "아이`XSI수리0* b대`…맥3 디dF레< 41/",
-    "문/인 당2 4nS 민관2동7사위 /""X보 철거tt",
-    "개R전 연w정연H 작가",
-    "KIA I수단·팬nI께하는:호kQ4M족 한마5 S최",
-    "현N차sJ <e 임원6늘려…~세z 리g (보j 육y",
-    "-선 폭:n@ 현장N조Z",
-    "STJ레콤 J분기 영D익t4천105t…2>1％ 증가",
-    "생r인증②_D안*a제bK 유@되면 대J _가끝"
-]
+# CSV 데이터 로드
+data = pd.read_csv('./data/train.csv')
 
-batch_size = len(data_samples)
-input_text = "\n".join([f"{i+1}. {text}" for i, text in enumerate(data_samples)])
-
-# 프롬프트 구성
-formatted_prompt = prompt.invoke({"batch_size": batch_size, "input_text": input_text})
+# 데이터셋 텍스트 추출 및 프롬프트 구성
+input_texts = data['text'].tolist()
+formatted_input = "\n".join(input_texts)
+formatted_prompt = prompt_template.format(input_text=formatted_input)
 
 # OLLama 모델에 프롬프트 전달하여 정제된 텍스트 생성
 response = llm(formatted_prompt)
 
-# 결과 출력
-print("정제 결과:")
-print(response)
+# 응답을 개별 정제된 텍스트 리스트로 변환
+cleaned_texts = response.split('\n')
+
+# 정제된 텍스트를 데이터프레임에 추가
+if len(cleaned_texts) == len(data):
+    data['cleaned_text'] = cleaned_texts
+else:
+    print("Error: 응답 결과 수와 입력 데이터 수가 일치하지 않습니다.") #응답 수 확인: 응답 결과의 텍스트 수와 원본 데이터 개수가 일치하는지 검증하는 코드를 추가하여, 응답이 제대로 반환되지 않았을 경우 디버깅이 가능하도록 했음
+
+# 정제된 데이터 저장
+data.to_csv('./data/cleaned_train.csv', index=False)
+print("정제된 데이터가 cleaned_train.csv 파일에 저장되었습니다.")
