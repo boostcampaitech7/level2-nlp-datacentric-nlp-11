@@ -22,12 +22,9 @@ prompt_label = ChatPromptTemplate.from_template(
 
     내용들의 근거들을 바탕으로 번호에 따른 텍스트에 대한 아스키 코드 대체 여부를 1 또는 0으로 분류해 주세요. 
     아스키 코드로 대체되었다면 1, 대체되지 않았다면 0입니다.
-    출력 형식을 엄격히 지키세요.
+    출력 형식은 숫자 하나만 반환해 주세요. 출력 형식을 엄격히 지키세요.
 
-    출력 형식:
-    1. 텍스트1: 1
-    2. 텍스트2: 0
-    ...
+    출력 형식: 1 또는 0
     """
 )
 
@@ -45,10 +42,10 @@ for index, row in data.iterrows():
     input_text = row['text']
 
     # Reasoning 체인 실행
-    response_reasoning = chain_reasoning.run({"batch_size": 1, "input": input_text})
+    response_reasoning = chain_reasoning.invoke({"batch_size": 1, "input": input_text})
 
     # label 체인 실행
-    response_label = chain_label.run({"response_reasoning": response_reasoning})
+    response_label = chain_label.invoke({"response_reasoning": response_reasoning})
 
     # 응답 결과 저장 (예시: 텍스트와 레이블을 저장)
     result = {
