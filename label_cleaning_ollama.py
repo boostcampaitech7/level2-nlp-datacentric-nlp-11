@@ -15,7 +15,7 @@ error_data = train_data[train_data['ID'].isin(unnoisy_ids)]
 
 
 ### 2. 라벨 의미 로드
-label_meanings = pd.read_csv('./data/label_meanings.csv')
+label_meanings = pd.read_csv('./data/label_meanings.csv', encoding='utf-8')
 label_meaning_dict = dict(zip(label_meanings['label'], label_meanings['meaning']))
 # 라벨 설명 문자열 생성
 label_descriptions = '\n'.join([f"{k}: {v}" for k, v in label_meaning_dict.items()])
