@@ -37,24 +37,28 @@ chain_label = prompt_label | llm_label
 data = pd.read_csv('./data/train.csv')
 results = []
 
-# 데이터 한 줄씩 처리
-for index, row in data.iterrows():
-    input_text = row['text']
-
+# 데이터 10개씩 묶어서 처리
+batch_size = 10
+for i in range(0, len(data), batch_size):
+    batch = data.iloc[i:i+batch_size]
+    input_texts = batch['text'].tolist()
+    
     # Reasoning 체인 실행
-    response_reasoning = chain_reasoning.invoke({"batch_size": 1, "input": input_text})
+    response_reasoning = chain_reasoning.invoke({"batch_size": batch_size, "input": input_texts})
 
-    # label 체인 실행
-    response_label = chain_label.invoke({"response_reasoning": response_reasoning})
+    # 각 텍스트에 대한 라벨 체인 실행
+    for idx, input_text in enumerate(input_texts):
+        single_response_reasoning = response_reasoning[idx]  # 각 텍스트별 reasoning 결과
+        response_label = chain_label.invoke({"response_reasoning": single_response_reasoning})
 
-    # 응답 결과 저장 (예시: 텍스트와 레이블을 저장)
-    result = {
-        "ID" : row['ID'],
-        "text": input_text,
-        "target": row['target'],
-        "noise": response_label.strip()
-    }
-    results.append(result)
+        # 응답 결과 저장
+        result = {
+            "ID" : batch.iloc[idx]['ID'],
+            "text": input_text,
+            "target": batch.iloc[idx]['target'],
+            "noise": response_label.strip()
+        }
+        results.append(result)
 
 # 결과를 DataFrame으로 변환
 results_df = pd.DataFrame(results)
