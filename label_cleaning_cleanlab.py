@@ -16,7 +16,7 @@ y_with_errors = data_with_label_errors['target']
 data_without_label_errors = found_noise_data[found_noise_data['noise'] == 1]['ID']
 
 # cleaned_train.csv 파일에서 정제된 데이터 로드
-cleaned_data = pd.read_csv('./data/cleaned_train.csv')
+cleaned_data = pd.read_csv('./data/cleaned_train_v2.csv')
 
 # 노이즈가 있는 데이터의 ID와 일치하는 cleaned_train 데이터를 가져와 학습용 데이터로 구성
 # 라벨 오류가 없는, 노이즈가 대부분 수정된 데이터들.
