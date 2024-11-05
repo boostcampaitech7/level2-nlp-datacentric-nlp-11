@@ -1,5 +1,5 @@
 /data
-/code
+/code/baseline_code.py
 /.git
 /output
 bs_from_scratch.py
