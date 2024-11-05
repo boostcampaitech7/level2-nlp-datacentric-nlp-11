@@ -1,12 +1,3 @@
----
-name: Pull Request
-about: Provide a suggestion or new idea for this project
-title: "FEAT/"
-labels: enhancement
-assignees: ''
-
----
-
 ## 🪡 Pull Request
 ### Overview
 <!-- 작업에 대한 개요를 간략하게 설명해주세요. -->
