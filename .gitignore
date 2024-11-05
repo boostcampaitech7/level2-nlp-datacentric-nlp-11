@@ -1,0 +1,5 @@
+wandb/
+*.bin
+*.log
+data/
+output/
