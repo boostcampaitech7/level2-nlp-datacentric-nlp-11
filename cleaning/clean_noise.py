@@ -64,7 +64,11 @@ def clean_noise():
     if os.path.isfile(filtered_file_path):
         filtered_df = pd.read_csv(filtered_file_path)
     else:
-        filtered_df = check_and_filter_noise()
+        try:
+            filtered_df = check_and_filter_noise()
+        except FileNotFoundError as e:
+            print(e)
+            return
 
     noisy_texts = filtered_df["text"]
 
