@@ -1,2 +1,6 @@
 /data
 /.git
+bs_from_scratch.py
+clean_label.ipynb
+nohup.out
+thread_pool.py
