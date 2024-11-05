@@ -1,5 +1,7 @@
 /data
+/code
 /.git
+/output
 bs_from_scratch.py
 clean_label.ipynb
 nohup.out
