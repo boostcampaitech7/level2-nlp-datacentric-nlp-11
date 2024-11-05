@@ -6,18 +6,18 @@ llm = Ollama(model='gemma2:27b')
 
 
 ### 1. 라벨 에러가 존재하는 데이터 불러오기(found_noise_train.csv에서 noise=0인 데이터의 ID)
-found_noise_data = pd.read_csv('./data/found_noise_train.csv')
+found_noise_data = pd.read_csv('../data/found_noise_train.csv')
 unnoisy_ids = found_noise_data[found_noise_data['noise'] == 0]['ID']
 # 전체 데이터 로드
-train_data = pd.read_csv('./data/train.csv')
+train_data = pd.read_csv('../data/train.csv')
 # 라벨 에러가 있는 데이터 필터링
 error_data = train_data[train_data['ID'].isin(unnoisy_ids)]
 # 수정된 데이터
-corrected_data = pd.read_csv('./data/label_corrected_ollama.csv')
+corrected_data = pd.read_csv('../data/label_corrected_ollama.csv')
 
 
 ### 2. 라벨 의미 로드
-label_meanings = pd.read_csv('./data/label_meanings.csv', encoding='utf-8')
+label_meanings = pd.read_csv('../data/label_meanings.csv', encoding='utf-8')
 label_meaning_dict = dict(zip(label_meanings['label'], label_meanings['meaning']))
 # 라벨 설명 문자열 생성
 label_descriptions = '\n'.join([f"{k}: {v}" for k, v in label_meaning_dict.items()])
@@ -69,5 +69,5 @@ for _, row in corrected_data.iterrows():
 
 # 결과를 데이터프레임으로 변환 후 CSV로 저장
 results_df = pd.DataFrame(results)
-results_df.to_csv('./data/labeling_cleaned_ollama.csv', index=False)
+results_df.to_csv('../data/labeling_cleaned_ollama.csv', index=False)
 print("클린된 데이터가 'labeling_cleaned_ollama.csv' 파일로 저장되었습니다.")
