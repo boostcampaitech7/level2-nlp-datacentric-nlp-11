@@ -13,6 +13,9 @@ input_csv_path = (
 # CSV 파일 읽기
 df = pd.read_csv(input_csv_path)
 
+df = df[
+    (df["category"] != "Uncategorized") & (df[" reasoning"] != "No reasoning provided")
+].copy()
 # 라벨과 정규화된 카테고리별로 출현 횟수 계산
 
 # LangChain 프롬프트 템플릿 설정
@@ -20,10 +23,11 @@ prompt_label_sum = ChatPromptTemplate.from_template(
     """
 ### Prompt:
 
-아래에 label과 category, counts 정보를 보고 해당 label이 어떤 category를 의미하는지를 하나의 category로 정의해주세요.
+아래에 label과 category, reasoning 정보를 보고 해당 label이 어떤 category를 의미하는지를 하나의 category로 정의해주세요.
 
 1. 하나의 label엔 하나의 category만 존재해야합니다.
-2. 최종 출력의 형식을 엄격히 지켜서 출력해주세요.
+2. 왜 해당 label에 해당 category가 붙는지
+3. 최종 출력의 형식을 엄격히 지켜서 출력해주세요.
 
 ### 입력 데이터(label, category, counts)
 
