@@ -3,3 +3,5 @@ wandb/
 *.log
 data/
 output/
+*.csv
+leadernoard_app/
