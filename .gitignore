@@ -4,3 +4,4 @@ wandb/
 data/
 output/
 __pycache__/
+code/.DS_Store
