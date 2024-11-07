@@ -4,4 +4,4 @@ wandb/
 data/
 output/
 *.csv
-leadernoard_app/
+leaderboard_app/
