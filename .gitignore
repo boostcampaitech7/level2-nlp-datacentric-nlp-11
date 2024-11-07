@@ -3,5 +3,5 @@ wandb/
 *.log
 data/
 output/
-*.csv
-leaderboard_app/
+__pycache__/
+code/.DS_Store
