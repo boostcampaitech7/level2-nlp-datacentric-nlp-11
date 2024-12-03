@@ -90,4 +90,4 @@ Topic Classification은 주어진 자연어 문장이 어떤 주제나 카테고
 
 ## 6 Wrap-up Report
 
-자세한 내용은 <a href="https://github.com/boostcampaitech7/level2-nlp-datacentric-nlp-11/blob/develop/Topic%20Classification%20%E1%84%83%E1%85%A2%E1%84%92%E1%85%AC_NLP_%E1%84%90%E1%85%B5%E1%86%B7%E1%84%85%E1%85%B5%E1%84%91%E1%85%A9%E1%84%90%E1%85%B3(11%E1%84%8C%E1%85%A9).pdf">**Wrap-up Report**</a>를 참고해 주세요 !
+자세한 내용은 <a href="https://github.com/boostcampaitech7/level2-nlp-datacentric-nlp-11/blob/main/Topic%20Classification%20%E1%84%83%E1%85%A2%E1%84%92%E1%85%AC_NLP_%E1%84%90%E1%85%B5%E1%86%B7%E1%84%85%E1%85%B5%E1%84%91%E1%85%A9%E1%84%90%E1%85%B3(11%E1%84%8C%E1%85%A9).pdf">**Wrap-up Report**</a>를 참고해 주세요 !
